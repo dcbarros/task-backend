@@ -35,7 +35,7 @@ pipeline {
                 steps {
                     sh '''
                         .venv/bin/python \
-                            -m pytests \
+                            -m pytest \
                             tests/unit \
                             -v \
                             --junitxml=reports/unit.xml
