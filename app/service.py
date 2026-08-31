@@ -23,8 +23,8 @@ class TaskService:
         title: str
     ) -> Task:
 
-        normalized_title = title.strip()
-
+        # normalized_title = title.strip()
+        normalized_title = title
         if not normalized_title:
             raise InvalidTaskTitleError()
 
