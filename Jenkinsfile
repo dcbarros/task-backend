@@ -11,7 +11,7 @@ pipeline {
         string(
             name: 'SOURCE_REF',
             defaultValue: 'main',
-            description: 'Branch do backend'
+            description: 'Branch, tag ou SHA do backend'
         )
     }
 
@@ -28,7 +28,9 @@ pipeline {
                 deleteDir()
 
                 checkout scmGit(
-                    branches: [[name: "*/${params.SOURCE_REF}"]],
+                    branches: [[
+                        name: params.SOURCE_REF
+                    ]],
                     userRemoteConfigs: [[
                         url: env.REPOSITORY_URL
                     ]]
