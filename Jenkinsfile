@@ -7,6 +7,18 @@ pipeline {
         skipDefaultCheckout(true)
     }
 
+    parameters {
+        string(
+            name: 'SOURCE_REF',
+            defaultValue: 'main',
+            description: 'Branch, tag ou SHA do backend'
+        )
+    }
+
+    enviroment {
+        REPOSITORY_URL = 'https://github.com/dcbarros/task-backend.git'
+    }
+
     stages {
 
         stage('Checkout') {
@@ -15,7 +27,14 @@ pipeline {
 
                 deleteDir()
 
-                checkout scm
+                checkout scmGit(
+                    branches: [[name: params.SOURCE_REF]],
+                    userRemoteConfigs: [[url: env.REPOSITORY_URL]]
+                )
+
+                sh '''
+                    echo "Backend revison: $(git rev-parse HEAD)"
+                '''
 
             }
 
