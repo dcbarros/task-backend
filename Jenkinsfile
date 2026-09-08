@@ -11,11 +11,11 @@ pipeline {
         string(
             name: 'SOURCE_REF',
             defaultValue: 'main',
-            description: 'Branch, tag ou SHA do backend'
+            description: 'Branch do backend'
         )
     }
 
-    enviroment {
+    environment {
         REPOSITORY_URL = 'https://github.com/dcbarros/task-backend.git'
     }
 
@@ -28,16 +28,20 @@ pipeline {
                 deleteDir()
 
                 checkout scmGit(
-                    branches: [[name: params.SOURCE_REF]],
-                    userRemoteConfigs: [[url: env.REPOSITORY_URL]]
+                    branches: [[name: "*/${params.SOURCE_REF}"]],
+                    userRemoteConfigs: [[
+                        url: env.REPOSITORY_URL
+                    ]]
                 )
 
                 sh '''
-                    echo "Backend revison: $(git rev-parse HEAD)"
+                    echo "Backend revision:"
+                    git rev-parse HEAD
+
+                    echo "Branch:"
+                    git branch --show-current
                 '''
-
             }
-
         }
 
 
@@ -58,9 +62,7 @@ pipeline {
 
                     mkdir -p reports
                 '''
-
             }
-
         }
 
 
@@ -75,9 +77,7 @@ pipeline {
                         -v \
                         --junitxml=reports/unit.xml
                 '''
-
             }
-
         }
 
 
@@ -92,9 +92,7 @@ pipeline {
                         -v \
                         --junitxml=reports/integration.xml
                 '''
-
             }
-
         }
 
     }
@@ -108,21 +106,14 @@ pipeline {
                 testResults: 'reports/*.xml',
                 allowEmptyResults: true
             )
-
         }
 
         success {
-
             echo 'Backend CI aprovada.'
-
         }
 
         failure {
-
             echo 'Backend CI reprovada.'
-
         }
-
     }
-
 }
